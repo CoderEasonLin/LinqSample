@@ -84,7 +84,7 @@ namespace LinqTests
         public void replace_http_to_https()
         {
             var urls = RepositoryFactory.GetUrls();
-            var actual = WithoutLinq.Select(urls, url => url.Replace("http:", "https:"));
+            var actual = urls.EasonSelect(url => url.Replace("http:", "https:"));
 
             var expected = new List<string>()
             {
@@ -101,7 +101,7 @@ namespace LinqTests
         public void retrun_length()
         {
             var urls = RepositoryFactory.GetUrls();
-            var actual = WithoutLinq.Select2(urls, url => url.Length);
+            var actual = urls.EasonSelect(url => url.Length);
 
             var expected = new List<int>()
             {
@@ -109,6 +109,21 @@ namespace LinqTests
                 20,
                 19,
                 17
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+        [TestMethod]
+        public void return_age_smaller_than_25()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = employees.EasonWhere(e=>e.Age<25).EasonSelect(e => $"{e.Role}:{e.Name}");
+
+            var expected = new List<string>()
+            {
+                "OP:Andy",
+                "Engineer:Frank",
             };
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
@@ -182,6 +197,15 @@ internal static class YourOwnLinq
             if (predicate(item, index))
                 yield return item;
             index++;
+        }
+    }
+
+    public static IEnumerable<TResult> EasonSelect<TResult, TSource>(this IEnumerable<TSource> source,
+        Func<TSource, TResult> selector)
+    {
+        foreach (var item in source)
+        {
+            yield return selector(item);
         }
     }
 }
