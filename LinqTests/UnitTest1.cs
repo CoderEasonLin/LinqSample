@@ -2,9 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using LinqTests;
 
 namespace LinqTests
 {
@@ -118,7 +116,7 @@ namespace LinqTests
         public void return_age_smaller_than_25()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = employees.EasonWhere(e=>e.Age<25).EasonSelect(e => $"{e.Role}:{e.Name}");
+            var actual = employees.EasonWhere(e => e.Age < 25).EasonSelect(e => $"{e.Role}:{e.Name}");
 
             var expected = new List<string>()
             {
