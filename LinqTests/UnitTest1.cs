@@ -186,7 +186,7 @@ namespace LinqTests
         public void Take2()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = WithoutLinq.EasonTakeWhile(employees, e => e.MonthSalary > 150, 2);
+            var actual = employees.EasonTakeWhile(e => e.MonthSalary > 150, 2);
 
             var expected = new List<Employee>()
             {
@@ -306,7 +306,7 @@ internal static class WithoutLinq
         }
     }
 
-    public static IEnumerable<TSource> EasonTakeWhile<TSource>(IEnumerable<TSource> source, Func<TSource, bool> func, int count)
+    public static IEnumerable<TSource> EasonTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> func, int count)
     {
         var enumerator = source.GetEnumerator();
         var resultCount = 0;
