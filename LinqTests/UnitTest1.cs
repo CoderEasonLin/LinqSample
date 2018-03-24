@@ -1,8 +1,10 @@
 ﻿using ExpectedObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using LinqTests;
 
 namespace LinqTests
 {
@@ -163,6 +165,22 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void groupSalary()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.JoeyGroup(employees, 3, e=>e.MonthSalary);
+
+            var expected = new List<int>()
+            {
+                620,
+                540,
+                370
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -212,7 +230,7 @@ internal static class WithoutLinq
         }
     }
 
-    public static IEnumerable<TSource> EasonTake<TSource>(IEnumerable<TSource> employees, int count)
+    public static IEnumerable<TSource> EasonTake<TSource>(this IEnumerable<TSource> employees, int count)
     {
         var enumerator = employees.GetEnumerator();
         while (enumerator.MoveNext() && --count >= 0)
@@ -231,6 +249,45 @@ internal static class WithoutLinq
             if (index <= count)
                 continue;
             yield return enumerator.Current;
+        }
+    }
+
+    public static IEnumerable<TResult> EasonGroupSalary<TResult, TSource>(IEnumerable<TSource> sources, Func<TSource, int, TResult> doer)
+    {
+        var enumerator = sources.GetEnumerator();
+        var index = 0;
+        while (enumerator.MoveNext())
+        {
+            yield return doer(enumerator.Current, index);
+            index++;
+        }
+    }
+
+    public static IEnumerable<IEnumerable<TSource>> EasonGroup<TSource>(IEnumerable<TSource> sources, int count)
+    {
+        var enumerator = sources.GetEnumerator();
+        var result = new List<TSource>();
+        var index = 0;
+        while (enumerator.MoveNext())
+        {
+            if(index % count != 0)
+                result.Add(enumerator.Current);
+            else
+            {
+                yield return result;
+                result.Clear();
+            }
+            index++;
+        }
+    }
+
+    public static IEnumerable<int> JoeyGroup<TSource>(IEnumerable<TSource> source, int pageSize, Func<TSource, int> func)
+    {
+        var index = 0;
+        while (index < source.Count())
+        {
+            yield return source.EasonSkip(index).EasonTake(pageSize).Sum(func);
+            index += pageSize;
         }
     }
 }
