@@ -33,5 +33,13 @@ namespace LinqTests
                 new Employee{Name="Joey", Role=RoleType.Engineer, MonthSalary=250, Age=40, WorkingYear=2.6},
             };
         }
+
+        public static IEnumerable<string> GetUrls()
+        {
+            yield return "http://tw.yahoo.com";
+            yield return "https://facebook.com";
+            yield return "https://twitter.com";
+            yield return "http://github.com";
+        }
     }
 }

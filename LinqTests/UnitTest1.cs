@@ -79,6 +79,40 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void replace_http_to_https()
+        {
+            var urls = RepositoryFactory.GetUrls();
+            var actual = WithoutLinq.Select(urls, url => url.Replace("http:", "https:"));
+
+            var expected = new List<string>()
+            {
+                "https://tw.yahoo.com",
+                "https://facebook.com",
+                "https://twitter.com",
+                "https://github.com"
+        };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
+
+        [TestMethod]
+        public void retrun_length()
+        {
+            var urls = RepositoryFactory.GetUrls();
+            var actual = WithoutLinq.Select2(urls, url => url.Length);
+
+            var expected = new List<int>()
+            {
+                19,
+                20,
+                19,
+                17
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -103,6 +137,27 @@ internal static class WithoutLinq
             index++;
         }
     }
+
+    public static IEnumerable<string> Select(IEnumerable<string> urls, Func<string, string> act)
+    {
+        foreach (var url in urls)
+        {
+            yield return act(url);
+        }
+    }
+
+    public static IEnumerable<int> Select2(IEnumerable<string> urls, Func<string, int> act)
+    {
+        foreach (var url in urls)
+        {
+            yield return act(url);
+        }
+    }
+
+    public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> action)
+    {
+        return null;
+    }
 }
 
 internal static class YourOwnLinq
@@ -126,5 +181,4 @@ internal static class YourOwnLinq
             index++;
         }
     }
-
 }
