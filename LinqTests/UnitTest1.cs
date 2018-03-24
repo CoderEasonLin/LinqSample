@@ -324,13 +324,13 @@ internal static class WithoutLinq
         }
     }
 
-    public static IEnumerable<TSource> EasonTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> func, int count)
+    public static IEnumerable<TSource> EasonTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, int count)
     {
         var enumerator = source.GetEnumerator();
         var resultCount = 0;
         while (resultCount < count && enumerator.MoveNext())
         {
-            if (func(enumerator.Current))
+            if (predicate(enumerator.Current))
             {
                 yield return enumerator.Current;
                 resultCount++;
