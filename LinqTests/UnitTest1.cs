@@ -117,7 +117,6 @@ namespace LinqTests
         {
             var employees = RepositoryFactory.GetEmployees();
 
-
             var actual = employees
                             .EasonWhere(e => e.Age < 25)
                             .EasonSelect(e => $"{e.Role}:{e.Name}");
@@ -133,6 +132,21 @@ namespace LinqTests
             };
 
             expected.ToExpectedObject().ShouldEqual(actualNew.ToList());
+        }
+
+        [TestMethod]
+        public void take()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.EasonTake(employees, 2);
+
+            var expected = new List<Employee>()
+            {
+                new Employee{Name="Joe", Role=RoleType.Engineer, MonthSalary=100, Age=44, WorkingYear=2.6 } ,
+                new Employee{Name="Tom", Role=RoleType.Engineer, MonthSalary=140, Age=33, WorkingYear=2.6} ,
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
     }
 }
@@ -180,6 +194,15 @@ internal static class WithoutLinq
         foreach (var item in source)
         {
             yield return selector(item);
+        }
+    }
+
+    public static IEnumerable<TSource> EasonTake<TSource>(IEnumerable<TSource> employees, int count)
+    {
+        var enumerator = employees.GetEnumerator();
+        while (enumerator.MoveNext() && --count >= 0)
+        {
+            yield return enumerator.Current;
         }
     }
 }
