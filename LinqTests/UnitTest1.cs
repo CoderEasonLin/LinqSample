@@ -67,7 +67,7 @@ namespace LinqTests
         public void find_employee_older_than_30()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = WithoutLinq.Find(employees, e => e.Age > 30);
+            var actual = employees.Find(e => e.Age > 30);
 
             var expected = new List<Employee>()
             {
@@ -93,6 +93,8 @@ internal static class WithoutLinq
                 yield return item;
         }
     }
+
+
 }
 
 internal class YourOwnLinq
