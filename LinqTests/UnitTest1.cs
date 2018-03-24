@@ -16,7 +16,27 @@ namespace LinqTests
 
             var expected = new List<Product>()
             {
-                //todo
+                new Product()
+                {
+                    Id = 2,
+                    Price = 210,
+                    Cost = 21,
+                    Supplier = "Yahoo"
+                },
+                new Product()
+                {
+                    Id = 3,
+                    Price = 310,
+                    Cost = 31,
+                    Supplier = "Odd-e"
+                },
+                new Product()
+                {
+                    Id = 4,
+                    Price = 410,
+                    Cost = 41,
+                    Supplier = "Odd-e"
+                }
             };
 
             expected.ToExpectedObject().ShouldEqual(actual);
@@ -28,7 +48,13 @@ internal class WithoutLinq
 {
     public static List<Product> FindProductByPrice(IEnumerable<Product> products, int lowBoundary, int highBoundary)
     {
-        throw new System.NotImplementedException();
+        List<Product> results = new List<Product>();
+        foreach (var product in products)
+        {
+            if (product.Price >= lowBoundary && product.Price <= highBoundary)
+                results.Add(product);
+        }
+        return results;
     }
 }
 
