@@ -2,7 +2,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using LinqTests;
 
 namespace LinqTests
 {
@@ -67,13 +69,10 @@ namespace LinqTests
         public void find_employee_older_than_30()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = employees.Find(e => e.Age > 30);
+            var actual = employees.Find((e, index) => e.Age > 30 && index > 2);
 
             var expected = new List<Employee>()
             {
-                new Employee{Name="Joe", Role=RoleType.Engineer, MonthSalary=100, Age=44, WorkingYear=2.6 } ,
-                new Employee{Name="Tom", Role=RoleType.Engineer, MonthSalary=140, Age=33, WorkingYear=2.6} ,
-                new Employee{Name="Kevin", Role=RoleType.Manager, MonthSalary=380, Age=55, WorkingYear=2.6} ,
                 new Employee{Name="Bas", Role=RoleType.Engineer, MonthSalary=280, Age=36, WorkingYear=2.6} ,
                 new Employee{Name="Joey", Role=RoleType.Engineer, MonthSalary=250, Age=40, WorkingYear=2.6}
             };
@@ -94,7 +93,16 @@ internal static class WithoutLinq
         }
     }
 
-
+    public static IEnumerable<T> Find<T>(this IEnumerable<T> source, Func<T, int, bool> predicate)
+    {
+        var index = 0;
+        foreach (var item in source)
+        {
+            if (predicate(item, index))
+                yield return item;
+            index++;
+        }
+    }
 }
 
 internal class YourOwnLinq
