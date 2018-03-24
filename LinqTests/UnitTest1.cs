@@ -180,11 +180,17 @@ internal static class YourOwnLinq
 {
     public static IEnumerable<T> EasonWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
+        Console.WriteLine("Where Start");
         foreach (var item in source)
         {
+            Console.WriteLine("Where Move Next");
             if (predicate(item))
+            {
+                Console.WriteLine("Where Yield Return");
                 yield return item;
+            }
         }
+        Console.WriteLine("Where End");
     }
 
     public static IEnumerable<T> EasonWhere<T>(this IEnumerable<T> source, Func<T, int, bool> predicate)
@@ -201,9 +207,12 @@ internal static class YourOwnLinq
     public static IEnumerable<TResult> EasonSelect<TResult, TSource>(this IEnumerable<TSource> source,
         Func<TSource, TResult> selector)
     {
+        Console.WriteLine("Select Start");
         foreach (var item in source)
         {
+            Console.WriteLine("Select Yield Return");
             yield return selector(item);
         }
+        Console.WriteLine("Select End");
     }
 }
