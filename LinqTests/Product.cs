@@ -7,7 +7,7 @@
         public int Cost { get; set; }
         public string Supplier { get; set; }
 
-        public bool TopSaleProduct()
+        public bool IsTopSale()
         {
             return Price >= 200 && Price <= 500 && Cost >= 30;
         }
