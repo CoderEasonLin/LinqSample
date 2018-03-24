@@ -19,13 +19,6 @@ namespace LinqTests
             {
                 new Product()
                 {
-                    Id = 2,
-                    Price = 210,
-                    Cost = 21,
-                    Supplier = "Yahoo"
-                },
-                new Product()
-                {
                     Id = 3,
                     Price = 310,
                     Cost = 31,
@@ -51,13 +44,6 @@ namespace LinqTests
 
             var expected = new List<Product>()
             {
-                new Product()
-                {
-                    Id = 2,
-                    Price = 210,
-                    Cost = 21,
-                    Supplier = "Yahoo"
-                },
                 new Product()
                 {
                     Id = 3,
