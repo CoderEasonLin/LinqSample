@@ -15,7 +15,7 @@ namespace LinqTests
         public void find_products_that_price_between_200_and_500()
         {
             var products = RepositoryFactory.GetProducts();
-            var actual = products.Find(product => product.IsTopSale());
+            var actual = products.EasonWhere(product => product.IsTopSale());
 
             var expected = new List<Product>()
             {
@@ -69,7 +69,7 @@ namespace LinqTests
         public void find_employee_older_than_30()
         {
             var employees = RepositoryFactory.GetEmployees();
-            var actual = employees.Find((e, index) => e.Age > 30 && index > 2);
+            var actual = employees.EasonWhere((e, index) => e.Age > 30 && index > 2);
 
             var expected = new List<Employee>()
             {
@@ -105,6 +105,26 @@ internal static class WithoutLinq
     }
 }
 
-internal class YourOwnLinq
+internal static class YourOwnLinq
 {
+    public static IEnumerable<T> EasonWhere<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                yield return item;
+        }
+    }
+
+    public static IEnumerable<T> EasonWhere<T>(this IEnumerable<T> source, Func<T, int, bool> predicate)
+    {
+        var index = 0;
+        foreach (var item in source)
+        {
+            if (predicate(item, index))
+                yield return item;
+            index++;
+        }
+    }
+
 }
