@@ -196,6 +196,24 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void SkipWhile()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = employees.EasonSkipWhile(e => e.MonthSalary < 150, 3);
+
+            var expected = new List<Employee>()
+            {
+                new Employee{Name="Kevin", Role=RoleType.Manager, MonthSalary=380, Age=55, WorkingYear=2.6} ,
+                new Employee{Name="Bas", Role=RoleType.Engineer, MonthSalary=280, Age=36, WorkingYear=2.6} ,
+                new Employee{Name="Mary", Role=RoleType.OP, MonthSalary=180, Age=26, WorkingYear=2.6} ,
+                new Employee{Name="Frank", Role=RoleType.Engineer, MonthSalary=120, Age=16, WorkingYear=2.6} ,
+                new Employee{Name="Joey", Role=RoleType.Engineer, MonthSalary=250, Age=40, WorkingYear=2.6},
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -317,6 +335,21 @@ internal static class WithoutLinq
                 yield return enumerator.Current;
                 resultCount++;
             }
+        }
+    }
+
+    public static IEnumerable<TSource> EasonSkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate, int count)
+    {
+        var enumerator = source.GetEnumerator();
+        var skippedCount = 0;
+        while (enumerator.MoveNext())
+        {
+            if (skippedCount < count && predicate(enumerator.Current))
+            {
+                skippedCount++;
+                continue;
+            }
+            yield return enumerator.Current;
         }
     }
 }
