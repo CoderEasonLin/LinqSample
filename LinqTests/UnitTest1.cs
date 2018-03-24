@@ -148,6 +148,21 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void skip()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = employees.EasonSkip(6);
+
+            var expected = new List<Employee>()
+            {
+                new Employee {Name = "Frank", Role = RoleType.Engineer, MonthSalary = 120, Age = 16, WorkingYear = 2.6},
+                new Employee {Name = "Joey", Role = RoleType.Engineer, MonthSalary = 250, Age = 40, WorkingYear = 2.6},
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -202,6 +217,19 @@ internal static class WithoutLinq
         var enumerator = employees.GetEnumerator();
         while (enumerator.MoveNext() && --count >= 0)
         {
+            yield return enumerator.Current;
+        }
+    }
+
+    public static IEnumerable<TSource> EasonSkip<TSource>(this IEnumerable<TSource> source, int count)
+    {
+        var enumerator = source.GetEnumerator();
+        var index = 0;
+        while (enumerator.MoveNext())
+        {
+            index++;
+            if (index <= count)
+                continue;
             yield return enumerator.Current;
         }
     }
