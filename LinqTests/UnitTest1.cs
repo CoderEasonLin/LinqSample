@@ -181,6 +181,21 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void Take2()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.EasonTakeWhile(employees, e => e.MonthSalary > 150, 2);
+
+            var expected = new List<Employee>()
+            {
+                new Employee{Name="Kevin", Role=RoleType.Manager, MonthSalary=380, Age=55, WorkingYear=2.6} ,
+                new Employee{Name="Bas", Role=RoleType.Engineer, MonthSalary=280, Age=36, WorkingYear=2.6} ,
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -288,6 +303,20 @@ internal static class WithoutLinq
         {
             yield return source.EasonSkip(index).EasonTake(pageSize).Sum(func);
             index += pageSize;
+        }
+    }
+
+    public static IEnumerable<TSource> EasonTakeWhile<TSource>(IEnumerable<TSource> source, Func<TSource, bool> func, int count)
+    {
+        var enumerator = source.GetEnumerator();
+        var resultCount = 0;
+        while (resultCount < count && enumerator.MoveNext())
+        {
+            if (func(enumerator.Current))
+            {
+                yield return enumerator.Current;
+                resultCount++;
+            }
         }
     }
 }
