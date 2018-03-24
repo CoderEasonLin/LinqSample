@@ -154,9 +154,12 @@ internal static class WithoutLinq
         }
     }
 
-    public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> action)
+    public static IEnumerable<TResult> Select<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
     {
-        return null;
+        foreach (var item in source)
+        {
+            yield return selector(item);
+        }
     }
 }
 
