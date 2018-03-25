@@ -214,6 +214,20 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual.ToList());
         }
+
+        [TestMethod]
+        public void First()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.EasonFirst(employees, e => e.Age > 30);
+
+            var expected = new List<Employee>()
+            {
+                new Employee{Name="Joey", Role=RoleType.Engineer, MonthSalary=250, Age=40, WorkingYear=2.6},
+            };
+
+            expected.ToExpectedObject().ShouldEqual(actual.ToList());
+        }
     }
 }
 
@@ -351,6 +365,11 @@ internal static class WithoutLinq
             }
             yield return enumerator.Current;
         }
+    }
+
+    public static IEnumerable<TSource> EasonFirst<TSource>(IEnumerable<TSource> sources, Func<TSource, bool> predicate)
+    {
+        throw new NotImplementedException();
     }
 }
 
