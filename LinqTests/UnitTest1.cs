@@ -233,6 +233,25 @@ namespace LinqTests
 
             expected.ToExpectedObject().ShouldEqual(actual);
         }
+
+        [TestMethod]
+        public void Last()
+        {
+            var employees = RepositoryFactory.GetEmployees();
+            var actual = WithoutLinq.EasonLast(employees, e => e.Age > 30);
+
+            var expected = new Employee
+            {
+                Name = "Joey",
+                Role = RoleType.Engineer,
+                MonthSalary = 250,
+                Age = 40,
+                WorkingYear = 2.6
+            };
+
+
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }
 
@@ -383,6 +402,18 @@ internal static class WithoutLinq
             }
         }
         return default(TSource);
+    }
+
+    public static TSource EasonLast<TSource>(IEnumerable<TSource> sources, Func<TSource, bool> predicate)
+    {
+        var enumerator = sources.GetEnumerator();
+        TSource result = default(TSource);
+        while (enumerator.MoveNext())
+        {
+            if (predicate(enumerator.Current))
+                result = enumerator.Current;
+        }
+        return result;
     }
 }
 
